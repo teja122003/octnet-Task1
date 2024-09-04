@@ -1,0 +1,108 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class ATMMachine {
+    private double balance;
+    private String pin;
+    private ArrayList<String> transactionHistory;
+
+    public ATMMachine(String pin) {
+        this.balance = 1000;
+        this.pin = pin;
+        this.transactionHistory = new ArrayList<>();
+    }
+
+    public boolean checkPin(String inputPin) {
+        return this.pin.equals(inputPin);
+    }
+
+    public void accountBalance() {
+        System.out.println("Current Balance: $" + balance);
+        transactionHistory.add("Balance Inquiry: $" + balance);
+    }
+
+    public void cashWithdrawal(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+            System.out.println("Withdrawal of $" + amount + " successful.");
+            transactionHistory.add("Withdrawn: $" + amount);
+        } else {
+            System.out.println("Insufficient balance!");
+        }
+    }
+
+    public void cashDeposit(double amount) {
+        balance += amount;
+        System.out.println("Deposit of $" + amount + " successful.");
+        transactionHistory.add("Deposited: $" + amount);
+    }
+
+    public void changePin(String newPin) {
+        this.pin = newPin;
+        System.out.println("PIN successfully changed.");
+        transactionHistory.add("PIN Changed");
+    }
+
+    public void printTransactionHistory() {
+        System.out.println("Transaction History:");
+        for (String transaction : transactionHistory) {
+            System.out.println(transaction);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ATMMachine atm = new ATMMachine("1234");  // Initial PIN is set to "1234"
+
+        System.out.print("Enter PIN: ");
+        String inputPin = scanner.nextLine();
+
+        if (!atm.checkPin(inputPin)) {
+            System.out.println("Incorrect PIN. Exiting...");
+            return;
+        }
+
+        while (true) {
+            System.out.println("\nATM Menu:");
+            System.out.println("1. Check Balance");
+            System.out.println("2. Withdraw Cash");
+            System.out.println("3. Deposit Cash");
+            System.out.println("4. Change PIN");
+            System.out.println("5. Transaction History");
+            System.out.println("6. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    atm.accountBalance();
+                    break;
+                case 2:
+                    System.out.print("Enter amount to withdraw: ");
+                    double withdrawalAmount = scanner.nextDouble();
+                    atm.cashWithdrawal(withdrawalAmount);
+                    break;
+                case 3:
+                    System.out.print("Enter amount to deposit: ");
+                    double depositAmount = scanner.nextDouble();
+                    atm.cashDeposit(depositAmount);
+                    break;
+                case 4:
+                    System.out.print("Enter new PIN: ");
+                    String newPin = scanner.next();
+                    atm.changePin(newPin);
+                    break;
+                case 5:
+                    atm.printTransactionHistory();
+                    break;
+                case 6:
+                    System.out.println("Exiting... Thank you for using the ATM!");
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+}
